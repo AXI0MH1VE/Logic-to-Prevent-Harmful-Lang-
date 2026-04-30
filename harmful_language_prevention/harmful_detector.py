@@ -11,11 +11,15 @@ from embodied_logic import EmbodiedLogicEngine, DeterministicResult, AnalysisOut
 
 class HarmfulLanguageDetector:
     """Detects harmful language using deterministic embodied logic."""
-    
+
     def __init__(self):
         """Initialize the detector with Axiom Hive embodied logic engine."""
         self.engine = EmbodiedLogicEngine()
         self.manifest = AxiomManifest()
+
+    def verify_integrity(self) -> bool:
+        """Verify system integrity through the embodied logic engine."""
+        return self.engine.verify_system_integrity()
     
     def analyze_text(self, text: str) -> Tuple[bool, float, List[str]]:
         """

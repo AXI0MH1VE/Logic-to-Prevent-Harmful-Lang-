@@ -1,0 +1,81 @@
+# Axiom Hive: On-Premise Deployment (Docker Compose)
+# Created by Nicholas Michael Grossi
+# Zero-entropy deterministic AI governance with cryptographic HITL enforcement
+#
+# Prerequisites:
+#   - Docker Engine 27.0+ / Docker Compose
+#   - SQLite with FTS5 (included in python:3.11-slim)
+#
+# Deploy:
+#   docker compose up -d
+#
+# Verify:
+#   curl http://localhost:8080/health
+
+services:
+  axiom-hive:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: axiom-hive:1.0.0
+    container_name: axiom-hive-api
+    restart: unless-stopped
+    
+    ports:
+      - "8080:8080"
+    
+    volumes:
+      # Persistent storage for SQLite proof chains and audit logs
+      - ./proofs:/app/proofs
+      - ./logs:/app/logs
+    
+    environment:
+      - PYTHONDONTWRITEBYTECODE=1
+      - PYTHONUNBUFFERED=1
+      - AXIOM_HIVE_ENV=production
+      - AXIOM_HIVE_CREATOR=Nicholas Michael Grossi
+    
+    # Resource limits for deterministic execution
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          cpus: '0.5'
+          memory: 256M
+    
+    # Security profile
+    security_opt:
+      - no-new-privileges:true
+    
+    read_only: false
+    
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+        labels: "axiom-hive,api,compliance"
+
+# Named volumes for data persistence
+volumes:
+  proofs:
+    driver: local
+  logs:
+    driver: local
+
+# Network configuration
+networks:
+  default:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

@@ -62,21 +62,27 @@ class HarmAxiom:
     def matches(self, text: str, context: Optional[Dict] = None) -> bool:
         """
         Deterministic matching - no inference, only exact rule application.
-        Returns True ONLY if all determiners are present and context matches.
+        Returns True if ANY determiner is present and context matches (OR logic).
+        Each determiner in the tuple represents an independent trigger condition.
         """
         text_lower = text.lower()
-        
-        # Check if all required determiners are present
+
+        # Check if ANY required determiner is present (OR logic across determiners)
+        determiner_found = False
         for determiner in self.determiners:
-            if determiner.lower() not in text_lower:
-                return False
-        
-        # Check context requirements if provided
+            if determiner.lower() in text_lower:
+                determiner_found = True
+                break
+
+        if not determiner_found:
+            return False
+
+        # Check context requirements if provided (AND logic with determiner)
         if context and self.context_requirements:
             for req in self.context_requirements:
                 if not context.get(req, False):
                     return False
-        
+
         return True
 
 

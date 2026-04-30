@@ -122,7 +122,7 @@ class HarmfulLanguageLogger:
                     'axiom_name': axiom.get('axiom_name', 'UNKNOWN'),
                     'description': axiom.get('description', ''),
                     'embodied_source': axiom.get('embodied_source', ''),
-                    'creator_attribution': axiom.get('creator', self.creator),
+                    'creator': axiom.get('creator_attribution', self.creator),
                     'priority': axiom.get('priority', 'UNKNOWN'),
                     'integrity_verified': axiom.get('integrity_verified', False)
                 }
