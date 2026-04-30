@@ -1,142 +1,56 @@
 #!/usr/bin/env python3
 """
-Harmful Language Detector Module
-Analyzes text for harmful content using applied logic patterns.
+Harmful Language Detector Module - Axiom Hive Edition
+Performs deterministic harm detection using embodied logic.
+Zero-inference execution - only hardcoded rules from lived experience.
 """
 
-import re
-from typing import Tuple, List, Dict
-from dataclasses import dataclass
-
-@dataclass
-class HarmfulPattern:
-    """Represents a pattern for detecting harmful language."""
-    pattern: str
-    category: str
-    weight: float
-    description: str
+from typing import Tuple, List, Dict, Any
+from axiom_manifest import AxiomManifest
+from embodied_logic import EmbodiedLogicEngine, DeterministicResult, AnalysisOutcome
 
 class HarmfulLanguageDetector:
-    """Detects harmful language using applied logic and pattern matching."""
+    """Detects harmful language using deterministic embodied logic."""
     
     def __init__(self):
-        """Initialize the detector with harmful language patterns."""
-        self.patterns = self._load_harmful_patterns()
-        self.threshold = 0.3  # Threshold for considering content harmful
-    
-    def _load_harmful_patterns(self) -> List[HarmfulPattern]:
-        """Load patterns for detecting harmful language."""
-        patterns = [
-            # Violence and threats
-            HarmfulPattern(
-                pattern=r'\b(kill|murder|assassinate|slaughter|massacre|execute|hang|shoot|stab|beat|attack|hurt|harm|injure|wound|torture|mutilate)\b',
-                category='violence',
-                weight=0.9,
-                description='Language depicting or encouraging physical violence'
-            ),
-            
-            # Hate speech and discrimination
-            HarmfulPattern(
-                pattern=r'\b(hate|despise|loathe|detest|abhor).*\b(race|ethnic|national|religious|gender|sex|sexual|orient|disabled|handicapped|retarded|nigger|faggot|dyke|spic|kike|gook|chink)\b',
-                category='hate_speech',
-                weight=0.95,
-                description='Explicit hate speech targeting protected characteristics'
-            ),
-            
-            # Harassment and bullying
-            HarmfulPattern(
-                pattern=r'\b(you\s+are\s+(worthless|pathetic|disgusting|ugly|fat|stupid|idiot|moron|loser|failure|trash|garbage|waste|scum|filth|vermin|animal|beast|devil|demon|satan|hell|damned|cursed))\b',
-                category='harassment',
-                weight=0.8,
-                description='Personal attacks and harassment'
-            ),
-            
-            # Self-harm and suicide
-            HarmfulPattern(
-                pattern=r'\b(suicide|suicidal|kill\s+myself|end\s+it\s+all|want\s+to\s+die|better\s+off\s+dead|cut\s+myself|self\s+harm|hurt\s+myself)\b',
-                category='self_harm',
-                weight=0.9,
-                description='Language indicating self-harm or suicidal ideation'
-            ),
-            
-            # Illegal activities
-            HarmfulPattern(
-                pattern=r'\b(rob|steal|theft|burglary|fraud|scam|embezzle|launder|smuggle|traffic|deal\s+drugs|manufacture\s+drugs|grow\s+weed|make\s+bomb|create\s+weapon|illegal\s+drugs)\b',
-                category='illegal_activities',
-                weight=0.75,
-                description='Language promoting or depicting illegal activities'
-            ),
-            
-            # Sexual exploitation
-            HarmfulPattern(
-                pattern=r'\b(child\s+porn|minor\s+sex|underage\s+sex|pedophile|molest|rape|sexual\s+assault|non.?consensual|revenge\s+porn|exploit\s+minor)\b',
-                category='sexual_exploitation',
-                weight=0.95,
-                description='Language depicting sexual exploitation or abuse'
-            ),
-            
-            # Terrorism and extremism
-            HarmfulPattern(
-                pattern=r'\b(terrorist|bombing|explosive|jihad|extremist|radicalize|recruit\s+for|martyrdom|suicide\s+bomber|chemical\s+weapon|biological\s+weapon)\b',
-                category='terrorism',
-                weight=0.9,
-                description='Language promoting terrorism or extremist ideology'
-            ),
-            
-            # General harmful intent indicators
-            HarmfulPattern(
-                pattern=r'\b(destroy|ruin|sabotage|revenge|vendetta|retaliate|get\s+even|payback|settle\s+the\s+score|teach\s+a\s+lesson|make\s+pay|regret)\b',
-                category='harmful_intent',
-                weight=0.6,
-                description='Language indicating harmful intent or desire for retaliation'
-            )
-        ]
-        
-        return patterns
+        """Initialize the detector with Axiom Hive embodied logic engine."""
+        self.engine = EmbodiedLogicEngine()
+        self.manifest = AxiomManifest()
     
     def analyze_text(self, text: str) -> Tuple[bool, float, List[str]]:
         """
-        Analyze text for harmful content.
+        Analyze text for harmful content using deterministic logic.
+        Zero inference - binary outcome based on hardcoded axioms only.
         
         Args:
             text: The text to analyze
             
         Returns:
             Tuple of (is_harmful, harm_score, harm_categories)
+            harm_score is 1.0 if harmful, 0.0 if safe (for backward compatibility)
         """
         if not text or not text.strip():
             return False, 0.0, []
         
-        text_lower = text.lower()
-        total_score = 0.0
-        detected_categories = set()
+        # Perform deterministic analysis
+        result: DeterministicResult = self.engine.analyze(text)
         
-        # Check each pattern
-        for pattern in self.patterns:
-            matches = re.findall(pattern.pattern, text_lower, re.IGNORECASE)
-            if matches:
-                # Calculate score based on number of matches and pattern weight
-                pattern_score = min(len(matches) * 0.1, 1.0) * pattern.weight
-                total_score += pattern_score
-                detected_categories.add(pattern.category)
+        # Convert to expected format
+        is_harmful = result.is_harmful()
+        harm_score = 1.0 if is_harmful else 0.0  # Binary score for compatibility
+        harm_categories = list(result.triggered_axioms)
         
-        # Normalize score to 0-1 range
-        normalized_score = min(total_score / len(self.patterns), 1.0)
-        
-        # Determine if content is harmful based on threshold
-        is_harmful = normalized_score >= self.threshold
-        
-        return is_harmful, normalized_score, list(detected_categories)
+        return is_harmful, harm_score, harm_categories
     
-    def get_detailed_analysis(self, text: str) -> Dict:
+    def get_detailed_analysis(self, text: str) -> Dict[str, Any]:
         """
-        Get detailed analysis of text for debugging and reporting.
+        Get detailed deterministic analysis for accountability and debugging.
         
         Args:
             text: The text to analyze
             
         Returns:
-            Dictionary with detailed analysis results
+            Dictionary with detailed deterministic analysis results
         """
         if not text or not text.strip():
             return {
@@ -144,41 +58,47 @@ class HarmfulLanguageDetector:
                 'harm_score': 0.0,
                 'harm_categories': [],
                 'pattern_matches': {},
-                'text_length': 0
+                'text_length': 0,
+                'deterministic_outcome': 'SAFE',
+                'requires_action': False,
+                'action_priority': 'NONE',
+                'creator_attribution': '',
+                'integrity_verified': True
             }
         
-        text_lower = text.lower()
+        # Get detailed analysis from embodied logic engine
+        detailed_result = self.engine.get_detailed_analysis(text)
+        
+        # Extract basic results for compatibility
+        is_harmful = detailed_result['requires_action']
+        harm_score = 1.0 if is_harmful else 0.0
+        harm_categories = [axiom['axiom_name'].lower().replace(' ', '_') 
+                          for axiom in detailed_result['triggered_axioms']]
+        
+        # Format pattern matches for backward compatibility
         pattern_matches = {}
-        total_score = 0.0
-        detected_categories = set()
-        
-        # Check each pattern and record matches
-        for pattern in self.patterns:
-            matches = re.findall(pattern.pattern, text_lower, re.IGNORECASE)
-            if matches:
-                pattern_matches[pattern.category] = {
-                    'matches': matches,
-                    'count': len(matches),
-                    'weight': pattern.weight,
-                    'description': pattern.description
-                }
-                # Calculate score based on number of matches and pattern weight
-                pattern_score = min(len(matches) * 0.1, 1.0) * pattern.weight
-                total_score += pattern_score
-                detected_categories.add(pattern.category)
-        
-        # Normalize score to 0-1 range
-        normalized_score = min(total_score / len(self.patterns), 1.0)
-        
-        # Determine if content is harmful based on threshold
-        is_harmful = normalized_score >= self.threshold
+        for axiom in detailed_result['triggered_axioms']:
+            category = axiom['axiom_name'].lower().replace(' ', '_')
+            pattern_matches[category] = {
+                'matches': [],  # We don't track individual matches in deterministic version
+                'count': 1,     # At least one match if triggered
+                'weight': 1.0,  # Deterministic - weight is binary
+                'description': axiom['description']
+            }
         
         return {
             'is_harmful': is_harmful,
-            'harm_score': normalized_score,
-            'harm_categories': list(detected_categories),
+            'harm_score': harm_score,
+            'harm_categories': harm_categories,
             'pattern_matches': pattern_matches,
-            'text_length': len(text)
+            'text_length': detailed_result.get('text_length', 0),
+            'deterministic_outcome': detailed_result['deterministic_outcome'],
+            'requires_action': detailed_result['requires_action'],
+            'action_priority': detailed_result['action_priority'],
+            'creator_attribution': detailed_result['creator_attribution'],
+            'integrity_verified': detailed_result['integrity_status'] == 'VERIFIED',
+            'triggered_axioms': detailed_result['triggered_axioms'],
+            'determiners_found': detailed_result['determiners_found']
         }
 
 if __name__ == "__main__":
