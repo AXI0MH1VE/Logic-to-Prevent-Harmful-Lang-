@@ -1,0 +1,1 @@
+harmful-language-prevention>=1.0.0
